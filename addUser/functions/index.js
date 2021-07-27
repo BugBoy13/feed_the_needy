@@ -1,10 +1,13 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const express = require('express');
+const { GeoPoint } = require("@google-cloud/firestore");
+import Geohash from 'latlon-geohash';   // FIXME
 
 admin.initializeApp();
 
 const app = express();
+const db = admin.firestore();
 
 app.post('/', async (req, res) => {
 
@@ -15,24 +18,26 @@ app.post('/', async (req, res) => {
     let name = data.name;
     let address = data.address;
     let type = data.userType;
-    let location = data.location;
+    let userLocation = data.location;
     let deviceToken = data.deviceToken;
     let user_id = data.userID;
     let range = 3000;
 
     let created_at = admin.firestore.Timestamp.now();
 
-    const db = admin.firestore();
+    let location = new GeoPoint(userLocation.latitude, userLocation.longitude);
+    let geohash = Geohash.encode(userLocation.latitude, userLocation.longitude);
 
     let userData = {
         address,
         created_at,
         deviceToken,
+        geohash,
         location,
         name,
         phone,
         range,
-        type: userType,
+        type,
         user_id
     }
 

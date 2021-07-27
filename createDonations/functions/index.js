@@ -1,6 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const express = require('express');
+import Geohash from 'latlon-geohash';   // FIXME
 
 admin.initializeApp();
 
@@ -33,15 +34,16 @@ app.post('/', async (req, res) => {
         })
     }
 
-    let location = user_data[0].data().location;
+    let geohash = user_data[0].data().geohash;
+
     let name = user_data[0].data().name;
     let phone = user_data[0].data().phone;
-
 
     let donationData = {
         address,
         created_at,
         description,
+        geohash,
         images_url,
         name,
         phone,
@@ -56,6 +58,9 @@ app.post('/', async (req, res) => {
 
     await db.collection('donation').add(donationData)
         .then(result => {
+
+            // TODO: Send push notification here
+
             console.log(JSON.stringify({ result }));
             return res.status(200).send({
                 'message': 'OK'
