@@ -2,7 +2,7 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const express = require('express');
 const { GeoPoint } = require("@google-cloud/firestore");
-import Geohash from 'latlon-geohash';   // FIXME
+const Geohash = require('ngeohash');
 
 admin.initializeApp();
 
