@@ -5,6 +5,7 @@ const express = require('express');
 admin.initializeApp();
 
 const app = express();
+const db = admin.firestore();
 
 app.post('/', async (req, res) => {
 
@@ -20,8 +21,6 @@ app.post('/', async (req, res) => {
     let plate_left_count = 0;
     let request_count = 0;
     let status = 'OPEN';
-
-    const db = admin.firestore();
 
     let user_data = (await db.collection('user')
         .where('user_id', '==', user_id)
@@ -39,6 +38,8 @@ app.post('/', async (req, res) => {
     let name = user_data[0].data().name;
     let phone = user_data[0].data().phone;
 
+    let donation_id = db.collection('donation').doc().id;
+
     let donationData = {
         address,
         created_at,
@@ -52,7 +53,8 @@ app.post('/', async (req, res) => {
         plate_left_count,
         request_count,
         status,
-        user_id
+        user_id,
+        donation_id
     }
 
     console.log(JSON.stringify({ donationData }));
@@ -64,7 +66,15 @@ app.post('/', async (req, res) => {
 
             console.log(JSON.stringify({ result }));
             return res.status(200).send({
-                'message': 'OK'
+                'message': 'OK',
+                'donation': {
+                    created_at,
+                    status,
+                    plate_count,
+                    plate_left_count,
+                    request_count,
+                    donation_id
+                }
             })
         })
         .catch(error => {
