@@ -34,6 +34,7 @@ app.post('/', async (req, res) => {
     }
 
     let geohash = user_data[0].data().geohash;
+    let location = user_data[0].data().location;
 
     let name = user_data[0].data().name;
     let phone = user_data[0].data().phone;
@@ -42,6 +43,7 @@ app.post('/', async (req, res) => {
         address,
         created_at,
         description,
+        location,
         geohash,
         images_url,
         name,

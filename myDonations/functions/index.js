@@ -28,7 +28,7 @@ app.get('/:user_id', async (req, res) => {
         let plate_left_count = donationData.plate_left_count;
         let request_count = donationData.request_count;
 
-        let donation_id = donation.id;
+        let donation_id = donationData.donation_id;
 
         donation_data.push({
             created_at,

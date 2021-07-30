@@ -21,7 +21,7 @@ app.post('/', async (req, res) => {
     let userLocation = data.location;
     let deviceToken = data.deviceToken;
     let user_id = data.userID;
-    let range = 3000;
+    let range = 30000;
 
     let created_at = admin.firestore.Timestamp.now();
 

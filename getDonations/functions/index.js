@@ -62,7 +62,7 @@ app.get('/:user_id', async (req, res) => {
 
         let distance = parseInt(GeohashDistance.inKm(userGeoHash, geohash) * 1000);
 
-        let donation_id = donation.id;
+        let donation_id = donationData.donation_id;
 
         if (distance <= range) {
             donation_data.push({

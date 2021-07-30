@@ -26,7 +26,6 @@ app.put('/', async (req, res) => {
         })
     }
 
-    let user_data = user_docs[0].data();
     let user_key = user_docs[0].id;
 
     await db.collection('user')

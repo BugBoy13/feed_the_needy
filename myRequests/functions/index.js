@@ -7,42 +7,53 @@ admin.initializeApp();
 const app = express();
 const db = admin.firestore();
 
-app.get('/:donation_id', async (req, res) => {
+app.get('/:user_id', async (req, res) => {
 
-    let donationID = req.params.donation_id;
-    console.log(JSON.stringify({ donationID }))
+    let userID = req.params.user_id;
+    console.log(JSON.stringify({ userID }))
 
     let requestsDocs = (await db.collection('donation_request')
-        .where('donation_id', '==', donationID)
+        .where('user_id', '==', userID)
         .get()).docs;
 
     let request_data = [];
 
-    let promiseArr = requestsDocs.map(request => {
+    let promiseArr = requestsDocs.map(async request => {
 
         let requestData = request.data();
 
+        let donation_id = requestData.donation_id;
+
+        let donationDocs = (await db.collection('donation')
+            .where('donation_id', '==', donation_id)
+            .get()).docs || null;
+
+        if (donationDocs == null) {
+            continue
+        }
+
+        let donation_data = donationDocs[0].data();
+        let location = donation_data.location;
+        let address = donation_data.address;
+        let name = donation_data.name;
+        let phone = donation_data.phone;
+
         let created_at = requestData.created_at;
         let plate_count = requestData.plate_count;
-        let phone = requestData.phone;
-        let name = requestData.name;
-        let address = requestData.address;
-        let status = requestData.status;
-        let user_id = requestData.user_id;
-
-        let request_id = request.request_id;
+        let description = requestData.description;
+        let request_id = requestData.request_id;
 
         request_data.push({
-            created_at,
-            plate_count,
-            phone,
-            name,
             address,
+            name,
+            phone,
+            created_at,
             status,
-            user_id,
+            plate_count,
+            description,
+            location,
             request_id
         })
-
     })
 
     Promise.all(promiseArr)
@@ -60,4 +71,4 @@ app.get('/:donation_id', async (req, res) => {
 
 })
 
-exports.myDonations = functions.https.onRequest(app);
+exports.myRequests = functions.https.onRequest(app);
